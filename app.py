@@ -3,7 +3,7 @@ import pickle
 import warnings as w
 w.filterwarnings('ignore')
 
-from src.db import Database
+from db import Database
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
