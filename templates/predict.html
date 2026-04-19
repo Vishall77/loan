@@ -16,9 +16,9 @@
 
     Dependents
     <select name="Dependents">
-        <option value="" disabled selected> Select Your Dependents</option>
-        <option value="Low"> LOW </option>
-        <option value="HIGH"> HIGH </option>
+        <option value="" disabled selected> Select Your Dependents()</option>
+        <option value="Low"> Less then 3</option>
+        <option value="HIGH"> More then 3</option>
     </select>
 
     Education
@@ -38,7 +38,7 @@
 
 
     Loan Amount <input type="number" name = 'LoanAmount' placeholder="Enter your loan amount " required>
-    Loan Amount Term <input type="number" name = "Loan_Amount_Term" placeholder="Enter Loan Tenture " required>
+    Loan Amount Term <input type="number" name = "Loan_Amount_Term" placeholder="Enter Loan Tenture in Days" required>
     Credit History <input type="number" name="Credit_History" placeholder="Enter Your Credit History" required>
      
 
@@ -53,7 +53,7 @@
     Family Income <input type="number" name = 'Family_Income' placeholder=" Enter your Family Income" required>
 
 
-    <button type="submit">Predict</button>
+    <button type="submit"> Check Eligibility</button>
 </form>
 
 <h3>
