@@ -1,0 +1,199 @@
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+/* BACKGROUND */
+body {
+    height: 100vh;
+    background: linear-gradient(135deg, #0f172a, #1e3a8a);
+    color: white;
+}
+
+/* NAVBAR */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px 40px;
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(10px);
+}
+
+.navbar a {
+    color: white;
+    margin-left: 15px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.navbar a:hover {
+    color: #38bdf8;
+}
+
+/* HERO */
+.hero {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.hero h1 {
+    font-size: 36px;
+    font-weight: 600;
+}
+
+.hero p {
+    opacity: 0.7;
+}
+
+/* CARD (GLASS EFFECT) */
+.card {
+    width: 80%;
+    margin: 30px auto;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    transition: 0.4s;
+}
+
+.card:hover {
+    transform: translateY(-5px) scale(1.01);
+}
+
+/* GRID */
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+/* INPUT WRAPPER */
+.input-box {
+    position: relative;
+}
+
+/* INPUT */
+input, select {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    transition: 0.3s;
+}
+
+/* PLACEHOLDER */
+input::placeholder {
+    color: transparent;
+}
+
+/* FLOAT LABEL */
+.input-box label {
+    position: absolute;
+    left: 12px;
+    top: 12px;
+    color: #aaa;
+    transition: 0.3s;
+    pointer-events: none;
+}
+
+/* FLOAT EFFECT */
+input:focus + label,
+input:not(:placeholder-shown) + label {
+    top: -10px;
+    font-size: 12px;
+    color: #38bdf8;
+}
+
+/* INPUT FOCUS */
+input:focus, select:focus {
+    background: rgba(255,255,255,0.2);
+}
+
+/* BUTTON */
+button {
+    margin-top: 25px;
+    padding: 14px;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    font-size: 16px;
+    background: linear-gradient(45deg, #38bdf8, #6366f1);
+    color: white;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* BUTTON HOVER */
+button:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 15px #38bdf8;
+}
+
+/* BUTTON CLICK */
+button:active {
+    transform: scale(0.95);
+}
+
+/* RESULT */
+.result {
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    animation: fadeIn 0.5s ease;
+}
+
+/* APPROVED */
+.approved {
+    background: rgba(34,197,94,0.2);
+    color: #22c55e;
+}
+
+/* REJECTED */
+.rejected {
+    background: rgba(239,68,68,0.2);
+    color: #ef4444;
+}
+
+/* ANIMATION */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* CENTER LOGIN/REGISTER */
+.center-box {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+/* GLASS FORM */
+.glass {
+    width: 300px;
+    padding: 30px;
+    border-radius: 20px;
+    background: rgba(255,255,255,0.08);
+    backdrop-filter: blur(20px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+/* ERROR */
+.error {
+    color: #ef4444;
+    margin-top: 10px;
+}
+
+/* SUCCESS */
+.success {
+    color: #22c55e;
+    margin-top: 10px;
+}
