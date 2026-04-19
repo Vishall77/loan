@@ -1,31 +1,48 @@
-<!-- <form method="post">
-    NAME <input type="text" name = "name" placeholder="Enter your Name " required>
-    EMAIL ID <input type="text" name = "email_id" placeholder="Enter your Email ID " required>
-    PHONE NO <input type="text" name = "phone_no" placeholder="Enter your Phone NO. " required>
-    PASSWORD <input type="text" name = "password" placeholder="Enter your Password " required>
-    <button type="submit">create </button>
-</form>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-<h3>
-    {% if msg %}
-    {{msg}}
-    {% endif %}
-</h3> -->
+<body>
 
-<a href="/">Home Page</a>
+<div class="center-box">
 
-<form method="post">
-    NAME <input type="text" name = "name" placeholder="Enter your Name " required>
-    EMAIL ID <input type="text" name = "email_id" placeholder="Enter your Email ID " required>
-    PHONE NO <input type="text" name = "phone_no" placeholder="Enter your Phone NO. " required>
-    PASSWORD <input type="text" name = "password" placeholder="Enter your Password " required>
-    <button type="submit">create </button>
-</form>
+    <form method="POST" class="glass">
 
-<h3>
-    {% if msg %}
-    {{msg}}
-    {% endif %}
-</h3>
+        <h2> Register</h2>
 
-<a href="/">Home Page</a>
+        <div class="input-box">
+            <input type="text" name="name" placeholder=" " required>
+            <label>Name</label>
+        </div>
+
+        <div class="input-box">
+            <input type="email" name="email_id" placeholder=" " required>
+            <label>Email</label>
+        </div>
+
+        <div class="input-box">
+            <input type="text" name="phone_no" placeholder=" " required>
+            <label>Phone</label>
+        </div>
+
+        <div class="input-box">
+            <input type="password" name="password" placeholder=" " required>
+            <label>Password</label>
+        </div>
+
+        <button type="submit">Create Account</button>
+
+        {% if msg %}
+            <p class="success">{{ msg }}</p>
+        {% endif %}
+
+        <p>Already have account? <a href="/login">Login</a></p>
+
+    </form>
+
+</div>
+
+</body>
+</html>
