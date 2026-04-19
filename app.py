@@ -15,7 +15,10 @@ with open('svm.pkl', 'rb') as f:
 
 @app.route("/")
 def home():
-    return render_template("home.html")
+    if "user" in session:
+        return redirect("/predict")
+    return redirect("/login")
+    
 
 # Here are register route
 @app.route("/register", methods=['GET', 'POST'])
@@ -46,7 +49,7 @@ def login():
 
         if user:
             session['user'] = user[1]
-            return redirect('/dashboard')
+            return redirect('/predict')
         else:
             return render_template('login.html', msg="Invalid Credentials")
 
@@ -68,7 +71,7 @@ def prediction():
         return redirect('/login')
     
     if request.method == 'POST':
-        print("🔍 Prediction Form:", request.form)
+        print("Prediction Form:", request.form)
 
         try:
             Gender = request.form.get('Gender')
@@ -95,7 +98,7 @@ def prediction():
                 Credit_History, Property_Area, Family_Income, Loan_Status
             )
 
-            return render_template('predict.html', pred=Loan_Status)
+            return render_template('home.html', pred=Loan_Status)
 
         except Exception as e:
             print("Prediction ERROR:", e)
