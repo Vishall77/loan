@@ -1,14 +1,38 @@
-<form method="POST">
-    <h2>Login</h2>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-    <input type="email" name="email_id" placeholder="Enter Email" required>
-    <input type="password" name="password" placeholder="Enter Password" required>
+<body>
 
-    <button type="submit">Login</button>
+<div class="center-box">
 
-    {% if msg %}
-        <p>{{ msg }}</p>
-    {% endif %}
-</form>
+    <form method="POST" class="glass">
 
-<a href="/register">Create Account</a>
+        <h2>🔐 Login</h2>
+
+        <div class="input-box">
+            <input type="email" name="email_id" placeholder=" " required>
+            <label>Email</label>
+        </div>
+
+        <div class="input-box">
+            <input type="password" name="password" placeholder=" " required>
+            <label>Password</label>
+        </div>
+
+        <button type="submit">Login</button>
+
+        {% if msg %}
+            <p class="error">{{ msg }}</p>
+        {% endif %}
+
+        <p>New user? <a href="/register">Create Account</a></p>
+
+    </form>
+
+</div>
+
+</body>
+</html>
