@@ -1,121 +1,127 @@
-from flask import Flask, render_template, request, redirect, session
-import pickle
-import warnings as w
-w.filterwarnings('ignore')
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Loan Eligibility</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
 
-from db import Database
+<body>
 
-app = Flask(__name__)
-app.secret_key = "supersecretkey"
-obj = Database()
+<!-- NAVBAR -->
+<div class="navbar">
+    <h2>🏦 LoanAI</h2>
+    <div>
+        <a href="/dashboard">Dashboard</a>
+        <a href="/logout">Logout</a>
+    </div>
+</div>
 
-with open('svm.pkl', 'rb') as f:
-    pipe = pickle.load(f)
+<!-- MAIN CONTAINER -->
+<div class="container">
 
+    <!-- LEFT SIDE FORM -->
+    <div class="form-card">
 
-@app.route("/")
-def home():
-    if "user" in session:
-        return redirect("/predict")
-    return redirect("/login")
-    
+        <h2>Loan Eligibility Check</h2>
+        <p class="sub">AI-powered instant decision</p>
 
-# Here are register route
-@app.route("/register", methods=['GET', 'POST'])
-def registration():
-    if request.method == 'POST':
-        print("Form Data:", request.form)
+        <form method="post">
 
-        name = request.form.get('name')
-        email_id = request.form.get('email_id')
-        phone_no = request.form.get('phone_no')
-        password = request.form.get('password')
+            <div class="grid">
 
-        obj.save_users(name, email_id, phone_no, password)
+                <select name="Gender" required>
+                    <option value="" disabled selected>Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
 
-        msg = 'Your Account is Created Successfully'
-        return render_template('register.html', msg=msg)
+                <select name="Married" required>
+                    <option value="" disabled selected>Marital Status</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
 
-    return render_template('register.html')
+                <select name="Dependents" required>
+                    <option value="" disabled selected>Dependents</option>
+                    <option value="Low">Less than 3</option>
+                    <option value="HIGH">More than 3</option>
+                </select>
 
-# Here are login route
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    if request.method == 'POST':
-        email_id = request.form.get('email_id')
-        password = request.form.get('password')
+                <select name="Education" required>
+                    <option value="" disabled selected>Education</option>
+                    <option value="Graduate">Graduate</option>
+                    <option value="Not Graduate">Not Graduate</option>
+                </select>
 
-        user = obj.check_user(email_id, password)
+                <select name="Self_Employed" required>
+                    <option value="" disabled selected>Employment</option>
+                    <option value="Yes">Yes</option>
+                    <option value="No">No</option>
+                </select>
 
-        if user:
-            session['user'] = user[1]
-            return redirect('/predict')
-        else:
-            return render_template('login.html', msg="Invalid Credentials")
+                <input type="number" name="LoanAmount" placeholder="Loan Amount" required>
+                <input type="number" name="Loan_Amount_Term" placeholder="Loan Term" required>
+                <input type="number" name="Credit_History" placeholder="Credit History (0/1)" required>
 
-    return render_template('login.html')
+                <select name="Property_Area" required>
+                    <option value="" disabled selected>Property Area</option>
+                    <option value="Semiurban">Semi Urban</option>
+                    <option value="Urban">Urban</option>
+                    <option value="Rural">Rural</option>
+                </select>
 
-# Here are dashboard route 
-@app.route('/dashboard')
-def dashboard():
-    if 'user' in session:
-        return render_template('dashboard.html', user=session['user'])
-    return redirect('/login')
+                <input type="number" name="Family_Income" placeholder="Family Income" required>
 
+            </div>
 
-# Here are predict route
-@app.route('/predict', methods=['GET', 'POST'])
-def prediction():
+            <button id="btn">Check Eligibility</button>
 
-    if "user" not in session:
-        return redirect('/login')
-    
-    if request.method == 'POST':
-        print("Prediction Form:", request.form)
+        </form>
+    </div>
 
-        try:
-            Gender = request.form.get('Gender')
-            Married = request.form.get('Married')
-            Dependents = request.form.get('Dependents')
-            Education = request.form.get('Education')
-            Self_Employed = request.form.get('Self_Employed')
+    <!-- RIGHT SIDE RESULT -->
+    <div class="result-card">
 
-            LoanAmount = float(request.form.get('LoanAmount'))
-            Loan_Amount_Term = float(request.form.get('Loan_Amount_Term'))
-            Credit_History = float(request.form.get('Credit_History'))
-            Property_Area = request.form.get('Property_Area')
-            Family_Income = float(request.form.get('Family_Income'))
+        {% if pred %}
 
-            Loan_Status = pipe.predict([[
-                Gender, Married, Dependents, Education,
-                Self_Employed, LoanAmount, Loan_Amount_Term,
-                Credit_History, Property_Area, Family_Income
-            ]])[0]
+            <h2>Result</h2>
 
-            obj.save_predictions(
-                Gender, Married, Dependents, Education,
-                Self_Employed, LoanAmount, Loan_Amount_Term,
-                Credit_History, Property_Area, Family_Income, Loan_Status
-            )
+            {% if pred == 'Y' %}
+                <div class="status approved">Approved ✅</div>
+            {% else %}
+                <div class="status rejected">Rejected ❌</div>
+            {% endif %}
 
-            return render_template('home.html', pred=Loan_Status)
+            <!-- PROGRESS BAR -->
+            <div class="progress">
+                <div class="progress-bar" style="width: {{prob}}%"></div>
+            </div>
+            <p class="percent">{{prob}}% Approval Chance</p>
 
-        except Exception as e:
-            print("Prediction ERROR:", e)
-            return "Error in prediction"
+            <!-- EXPLANATION -->
+            <div class="explain">
+                <h3>{{summary}}</h3>
+                <ul>
+                    {% for r in reasons %}
+                        <li>{{r}}</li>
+                    {% endfor %}
+                </ul>
+            </div>
 
-    return render_template('predict.html')
+        {% else %}
+            <h2>No Prediction Yet</h2>
+            <p>Fill the form to check eligibility</p>
+        {% endif %}
 
+    </div>
 
-# here are logout route
-@app.route('/logout')
-def logout():
-    session.pop('user', None)
-    return redirect('/login')
+</div>
 
+<script>
+document.querySelector("form").addEventListener("submit", function(){
+    document.getElementById("btn").innerText = "Processing...";
+});
+</script>
 
-
-
-if __name__ == "__main__":
-    app.run(debug=True)
-    
+</body>
+</html>
