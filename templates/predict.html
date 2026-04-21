@@ -1,34 +1,43 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Loan Eligibility</title>
+    <title>Loan Eligibility | LoanAI</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        /* Progress bar color logic */
+        .progress-bar {
+            height: 100%;
+            background: {{ '#2ecc71' if pred == 'Y' else '#e74c3c' }};
+            transition: width 1.5s ease-in-out;
+        }
+        .percent {
+            font-weight: bold;
+            color: {{ '#27ae60' if pred == 'Y' else '#c0392b' }};
+            margin-top: 5px;
+        }
+        #btn:disabled {
+            background: #a0a0a0;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
-
 <body>
 
-<!-- NAVBAR -->
 <div class="navbar">
     <h2>🏦 LoanAI</h2>
     <div>
-        <a href="/dashboard">Dashboard</a>
-        <a href="/logout">Logout</a>
+        <a href="/dashboard">My Profile</a>
+        <a href="/logout" style="color: #e74c3c; margin-left: 15px;">Logout</a>
     </div>
 </div>
 
-<!-- MAIN CONTAINER -->
 <div class="container">
-
-    <!-- LEFT SIDE FORM -->
     <div class="form-card">
-
-        <h2>Loan Eligibility Check</h2>
-        <p class="sub">AI-powered instant decision</p>
-
-        <form method="post">
-
+        <h2>Eligibility Check</h2>
+        <p style="color: #666; margin-bottom: 20px;">Provide your details for AI-based analysis</p>
+        
+        <form method="post" id="predictForm">
             <div class="grid">
-
                 <select name="Gender" required>
                     <option value="" disabled selected>Gender</option>
                     <option value="Male">Male</option>
@@ -36,91 +45,93 @@
                 </select>
 
                 <select name="Married" required>
-                    <option value="" disabled selected>Marital Status</option>
+                    <option value="" disabled selected>Married</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
 
                 <select name="Dependents" required>
                     <option value="" disabled selected>Dependents</option>
-                    <option value="Low">Less than 3</option>
-                    <option value="HIGH">More than 3</option>
+                    <option value="Low">Low (0-2)</option>
+                    <option value="HIGH">High (3+)</option>
                 </select>
 
                 <select name="Education" required>
                     <option value="" disabled selected>Education</option>
                     <option value="Graduate">Graduate</option>
-                    <option value="Not Graduate">Not Graduate</option>
+                    <option value="Not Graduate">Undergraduate</option>
                 </select>
 
                 <select name="Self_Employed" required>
-                    <option value="" disabled selected>Employment</option>
+                    <option value="" disabled selected>Self Employed</option>
                     <option value="Yes">Yes</option>
                     <option value="No">No</option>
                 </select>
 
-                <input type="number" name="LoanAmount" placeholder="Loan Amount" required>
-                <input type="number" name="Loan_Amount_Term" placeholder="Loan Term" required>
-                <input type="number" name="Credit_History" placeholder="Credit History (0/1)" required>
+                <input type="number" name="LoanAmount" placeholder="Amount (in thousands)" required>
+                <input type="number" name="Loan_Amount_Term" placeholder="Term (months)" required>
+                <input type="number" name="Credit_History" placeholder="Credit (1=Good, 0=Bad)" required>
 
                 <select name="Property_Area" required>
                     <option value="" disabled selected>Property Area</option>
-                    <option value="Semiurban">Semi Urban</option>
                     <option value="Urban">Urban</option>
+                    <option value="Semiurban">Semi Urban</option>
                     <option value="Rural">Rural</option>
                 </select>
 
-                <input type="number" name="Family_Income" placeholder="Family Income" required>
-
+                <input type="number" name="Family_Income" placeholder="Monthly Family Income" required>
             </div>
-
-            <button id="btn">Check Eligibility</button>
-
+            <button type="submit" id="btn">Analyze Application</button>
         </form>
     </div>
 
-    <!-- RIGHT SIDE RESULT -->
     <div class="result-card">
-
         {% if pred %}
-
-            <h2>Result</h2>
-
+            <h2>AI Analysis Result</h2>
+            
             {% if pred == 'Y' %}
-                <div class="status approved">Approved ✅</div>
+                <div class="status approved">Status: ELIGIBLE ✅</div>
             {% else %}
-                <div class="status rejected">Rejected ❌</div>
+                <div class="status rejected">Status: NOT ELIGIBLE ❌</div>
             {% endif %}
 
-            <!-- PROGRESS BAR -->
             <div class="progress">
                 <div class="progress-bar" style="width: {{prob}}%"></div>
             </div>
-            <p class="percent">{{prob}}% Approval Chance</p>
+            <p class="percent">{{prob}}% Approval Confidence</p>
 
-            <!-- EXPLANATION -->
             <div class="explain">
-                <h3>{{summary}}</h3>
-                <ul>
+                <h3 style="margin-bottom: 10px;">{{ summary }}</h3>
+                <ul style="padding-left: 20px; color: #555;">
                     {% for r in reasons %}
-                        <li>{{r}}</li>
+                        <li>{{ r }}</li>
                     {% endfor %}
                 </ul>
             </div>
+            
+            <p style="font-size: 12px; color: #999; margin-top: 20px;">
+                *Note: This is an AI prediction. Final decision depends on bank verification.
+            </p>
 
         {% else %}
-            <h2>No Prediction Yet</h2>
-            <p>Fill the form to check eligibility</p>
+            <div style="text-align: center; padding-top: 50px;">
+                <img src="https://cdn-icons-png.flaticon.com/512/1534/1534938.png" width="80" style="opacity: 0.2;">
+                <h2 style="color: #ccc; margin-top: 20px;">Waiting for Input</h2>
+                <p style="color: #999;">Fill the form and click analyze to see results.</p>
+            </div>
         {% endif %}
-
     </div>
-
 </div>
 
 <script>
-document.querySelector("form").addEventListener("submit", function(){
-    document.getElementById("btn").innerText = "Processing...";
-});
+    const form = document.getElementById('predictForm');
+    const btn = document.getElementById('btn');
+
+    form.onsubmit = function() {
+        btn.innerText = "AI is Analyzing...";
+        btn.disabled = true;
+        btn.style.opacity = "0.7";
+    };
 </script>
 
 </body>
