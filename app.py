@@ -1,7 +1,8 @@
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 import pickle
 import warnings as w
 w.filterwarnings('ignore')
+import hashlib
 
 from db import Database
 
@@ -12,6 +13,9 @@ obj = Database()
 with open('svm.pkl', 'rb') as f:
     pipe = pickle.load(f)
 
+def hash_pin(pin):
+    pin = hashlib.sha256(str(pin).encode()).hexdigest()
+    return pin
 
 @app.route("/")
 def home():
@@ -24,17 +28,22 @@ def home():
 @app.route("/register", methods=['GET', 'POST'])
 def registration():
     if request.method == 'POST':
-        print("Form Data:", request.form)
-
         name = request.form.get('name')
         email_id = request.form.get('email_id')
         phone_no = request.form.get('phone_no')
-        password = request.form.get('password')
+        password = hash_pin(request.form.get('password'))
 
-        obj.save_users(name, email_id, phone_no, password)
+        # Check status from database
+        status = obj.save_users(name, email_id, phone_no, password)
 
-        msg = 'Your Account is Created Successfully'
-        return render_template('register.html', msg=msg)
+        if status == "exists":
+            # Agar pehle se hai toh error message
+            return render_template('register.html', error_msg='Email or Phone Number already registered!')
+        elif status == "success":
+            # Agar naya hai toh success message
+            return render_template('register.html', msg='Account Created Successfully!')
+        else:
+            return render_template('register.html', error_msg='Something went wrong. Try again.')
 
     return render_template('register.html')
 
@@ -43,13 +52,14 @@ def registration():
 def login():
     if request.method == 'POST':
         email_id = request.form.get('email_id')
-        password = request.form.get('password')
+        password = hash_pin(request.form.get('password'))
 
         user = obj.check_user(email_id, password)
 
         if user:
-            session['user'] = user[1]
-            return redirect('/predict')
+            # user user ka 'name' hai jo hum session mein save kar rahe hain
+            session['user'] = user 
+            return redirect(url_for('dashboard'))
         else:
             return render_template('login.html', msg="Invalid Credentials")
 
@@ -59,50 +69,65 @@ def login():
 @app.route('/dashboard')
 def dashboard():
     if 'user' in session:
-        return render_template('dashboard.html', user=session['user'])
-    return redirect('/login')
-
+        # Dictionary cursor use karein taaki data {'column_name': value} format mein mile
+        dict_cursor = obj.conn.cursor(dictionary=True)
+        
+        # Predictions fetch karein
+        dict_cursor.execute("SELECT * FROM predictions ORDER BY id DESC")
+        history = dict_cursor.fetchall()
+        
+        dict_cursor.close() # Cursor close karna na bhoolein
+        
+        return render_template('dashboard.html', user=session['user'], history=history)
+    
+    return redirect(url_for('login'))
 
 # Here are predict route
 @app.route('/predict', methods=['GET', 'POST'])
 def prediction():
-
     if "user" not in session:
-        return redirect('/login')
+        return redirect(url_for('login'))
     
     if request.method == 'POST':
-        print("Prediction Form:", request.form)
-
         try:
-            Gender = request.form.get('Gender')
-            Married = request.form.get('Married')
-            Dependents = request.form.get('Dependents')
-            Education = request.form.get('Education')
-            Self_Employed = request.form.get('Self_Employed')
+            # 1. Sabse pehle data collect karein
+            payload = {
+                'Gender': request.form.get('Gender'),
+                'Married': request.form.get('Married'),
+                'Dependents': request.form.get('Dependents'),
+                'Education': request.form.get('Education'),
+                'Self_Employed': request.form.get('Self_Employed'),
+                'LoanAmount': float(request.form.get('LoanAmount', 0)),
+                'Loan_Amount_Term': float(request.form.get('Loan_Amount_Term', 0)),
+                'Credit_History': float(request.form.get('Credit_History', 0)),
+                'Property_Area': request.form.get('Property_Area'),
+                'Family_Income': float(request.form.get('Family_Income', 0))
+            }
 
-            LoanAmount = float(request.form.get('LoanAmount'))
-            Loan_Amount_Term = float(request.form.get('Loan_Amount_Term'))
-            Credit_History = float(request.form.get('Credit_History'))
-            Property_Area = request.form.get('Property_Area')
-            Family_Income = float(request.form.get('Family_Income'))
+            # 2. Model se predict karwayein
+            # ML model ko list of lists chahiye hota hai
+            features = [list(payload.values())]
+            prediction_result = pipe.predict(features) 
+            
+            # Prediction ko payload mein add karein
+            payload['Loan_Status'] = str(prediction_result)
 
-            Loan_Status = pipe.predict([[
-                Gender, Married, Dependents, Education,
-                Self_Employed, LoanAmount, Loan_Amount_Term,
-                Credit_History, Property_Area, Family_Income
-            ]])[0]
+            # 3. DB mein save karein (Dictionary bhej rahe hain)
+            obj.save_predictions(payload)
 
-            obj.save_predictions(
-                Gender, Married, Dependents, Education,
-                Self_Employed, LoanAmount, Loan_Amount_Term,
-                Credit_History, Property_Area, Family_Income, Loan_Status
-            )
-
-            return render_template('home.html', pred=Loan_Status)
+            # 4. UI variables
+            prob_val = 80 if prediction_result == 'Y' else 30
+            
+            return render_template('predict.html', 
+                                 pred=prediction_result, 
+                                 prob=prob_val, 
+                                 summary="AI Analysis Successful", 
+                                 reasons=["Verified via ML Model"])
 
         except Exception as e:
-            print("Prediction ERROR:", e)
-            return "Error in prediction"
+            # Agar error aaye toh terminal mein check karein
+            print(f">>> APP ERROR: {e}")
+            return f"Error in prediction: {e}"
 
     return render_template('predict.html')
 
@@ -112,8 +137,6 @@ def prediction():
 def logout():
     session.pop('user', None)
     return redirect('/login')
-
-
 
 
 if __name__ == "__main__":
