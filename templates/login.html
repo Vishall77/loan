@@ -1,38 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <title>Login | LoanAI</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-
 <body>
-
 <div class="center-box">
-
     <form method="POST" class="glass">
-
         <h2>🔐 Login</h2>
-
         <div class="input-box">
             <input type="email" name="email_id" placeholder=" " required>
-            <label>Email</label>
+            <label>Email Address</label>
         </div>
-
         <div class="input-box">
             <input type="password" name="password" placeholder=" " required>
             <label>Password</label>
         </div>
-
-        <button type="submit">Login</button>
-
-        {% if msg %}
-            <p class="error">{{ msg }}</p>
-        {% endif %}
-
-        <p>New user? <a href="/register">Create Account</a></p>
-
+        <button type="submit">Access Portal</button>
+        {% if msg %}<p class="error">{{ msg }}</p>{% endif %}
+        <p>Need an account? <a href="/register">Register Here</a></p>
     </form>
-
 </div>
-
 </body>
 </html>
