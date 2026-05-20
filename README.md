@@ -52,7 +52,6 @@ The prediction system uses a trained Support Vector Machine (SVM) model for clas
 ├── static/
 │   └── style.css
 
-│
 ├── templates/
 │   ├── login.html
 │   ├── register.html
@@ -67,3 +66,33 @@ The prediction system uses a trained Support Vector Machine (SVM) model for clas
 ├── app.py
 ├── requirements.txt
 └── README.md
+
+# 📸 Application Screens
+## 🔐 Login Page
+* Secure login system
+* Session handling
+## 📝 Registration Page
+* User account creation
+* Duplicate email protection
+## 🤖 Prediction Page
+* Loan eligibility prediction
+* Interactive UI
+
+# 🔒 Security Features
+
+* ✅ Password Hashing using bcrypt
+* ✅ Session-Based Authentication
+* ✅ Duplicate User Handling
+* ✅ Protected Routes
+
+  
+
+# 🌐 Deployment
+* Hosted on Render with automatic CI/CD via GitHub
+* Uses environment variables for secure configuration
+* MySQL database integrated via Aiven plugin
+* Gunicorn used as production WSGI server
+
+# 👨‍💻 Author
+Vishal Baghel
+Enthusiastic AI/Data Scientist & Python Developer passionate about building Machine Learning and Full-Stack Applications.
