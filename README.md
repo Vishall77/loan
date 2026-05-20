@@ -6,14 +6,14 @@ This project combines Machine Learning + Flask + MySQL + Authentication System t
 
 # 🚀 Features
 
-✅ User Registration & Login Authentication
-✅ Secure Password Hashing using bcrypt
-✅ Loan Approval Prediction using Machine Learning
-✅ Prediction Results Stored in MySQL Database
-✅ Responsive & Interactive Banking UI
-✅ Session Management
-✅ Real-Time Loan Eligibility Check
-✅ Explanation Logic for Loan Approval/Rejection
+* ✅ User Registration & Login Authentication
+* ✅ Secure Password Hashing using bcrypt
+* ✅ Loan Approval Prediction using Machine Learning
+* ✅ Prediction Results Stored in MySQL Database
+* ✅ Responsive & Interactive Banking UI
+* ✅ Session Management
+* ✅ Real-Time Loan Eligibility Check
+* ✅ Explanation Logic for Loan Approval/Rejection
 
 The prediction system uses a trained Support Vector Machine (SVM) model for classification.
 
