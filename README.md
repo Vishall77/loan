@@ -88,10 +88,9 @@ The prediction system uses a trained Support Vector Machine (SVM) model for clas
   
 
 # 🌐 Deployment
-* Hosted on Render with automatic CI/CD via GitHub
+* Hosted on Render
 * Uses environment variables for secure configuration
 * MySQL database integrated via Aiven plugin
-* Gunicorn used as production WSGI server
 
 # 👨‍💻 Author
 Vishal Baghel
