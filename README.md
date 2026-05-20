@@ -51,6 +51,7 @@ The prediction system uses a trained Support Vector Machine (SVM) model for clas
 │
 ├── static/
 │   └── style.css
+
 │
 ├── templates/
 │   ├── login.html
