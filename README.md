@@ -59,8 +59,7 @@ The prediction system uses a trained Support Vector Machine (SVM) model for clas
 │   ├── home.html
 │   └── dashboard.html
 │
-├── src/
-│   └── db.py
+├── db.py
 │
 ├── svm.pkl
 ├── app.py
