@@ -14,7 +14,6 @@ This project combines **Machine Learning + Flask + MySQL + Authentication System
 ✅ Prediction Results Stored in MySQL Database
 ✅ Responsive & Interactive Banking UI
 ✅ Session Management
-✅ Mobile-Friendly Design
 ✅ Real-Time Loan Eligibility Check
 ✅ Explanation Logic for Loan Approval/Rejection
 
@@ -68,6 +67,24 @@ The prediction system uses a trained **Support Vector Machine (SVM)** model for 
 
 ---
 
+# 📊 Dataset Information
+
+The model was trained on a public loan prediction dataset from Kaggle containing applicant financial and demographic information.
+
+Features include:
+- Gender
+- Marital Status
+- Dependents
+- Education
+- Employment Status
+- Loan Amount
+- Loan Term
+- Credit History
+- Property Area
+- Family Income
+
+---
+
 # 📂 Project Structure
 
 ```bash
@@ -83,9 +100,7 @@ LOAN_APPROVAL_SYSTEM/
 │   ├── home.html
 │   └── dashboard.html
 │
-├── src/
-│   └── db.py
-│
+├── db.py
 ├── svm.pkl
 ├── app.py
 ├── requirements.txt
@@ -99,7 +114,7 @@ LOAN_APPROVAL_SYSTEM/
 ## 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
+git clone https://github.com/Vishall77/loan
 ```
 
 ---
@@ -229,8 +244,6 @@ http://127.0.0.1:5000
 This project can be deployed using:
 
 * Render
-* Railway
-* PythonAnywhere
 
 ---
 
@@ -238,7 +251,7 @@ This project can be deployed using:
 
 ### Vishal Baghel
 
-Aspiring Data Scientist & Python Developer passionate about building Machine Learning and Full-Stack Applications.
+Enthusiastic AI & Data Science passionate about building Machine Learning and Full-Stack Applications.
 
 ---
 
@@ -247,7 +260,7 @@ Aspiring Data Scientist & Python Developer passionate about building Machine Lea
 Add your repository link here:
 
 ```bash
-https://github.com/YOUR_USERNAME/YOUR_REPOSITORY
+https://github.com/Vishall77/loan
 ```
 
 ---
@@ -255,3 +268,4 @@ https://github.com/YOUR_USERNAME/YOUR_REPOSITORY
 # ⭐ If you like this project
 
 Give this repository a ⭐ on GitHub.
+
